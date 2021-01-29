@@ -1,0 +1,59 @@
+git --version
+
+git config --global user.name "yeasinopu17"
+
+git config --global user.email yeasinopu@gmail.com
+
+
+git config --list
+
+
+
+/*
+create git repository
+*/
+-- first open the folder with cmd
+
+git init
+
+git status
+
+git add . //Adding files to the staging area
+
+git status
+
+git commit -m "first commit"
+
+git log --oneline
+
+git add .
+
+git log
+
+git log --oneline
+
+git checkout 15e7215 index.html // old file in coming back; not change in git repository; Checking out a file from an earlier commit
+
+git reset HEAD index.html // go back to staging before coming back ; this not change the file
+
+git checkout -- index.html // go back before checkout
+
+git reset // reset the last commit
+
+
+
+git remote add origin https://github.com/yeasinopu17/js-Practice-Project.git
+
+git push -u origin master
+
+
+git clone <repository URL>
+
+
+
+
+
+--=======push an existing repository from the command line
+git remote add origin https://github.com/yeasinopu17/Temporary_add_to_version_control.git
+git branch -M main
+git push -u origin main
