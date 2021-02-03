@@ -46,6 +46,9 @@ both
 pm0$county.site <- with(pm0, paste(County.Code, Site.ID, sep = "." ))
 pm1$county.site <- with(pm1, paste(County.Code, Site.ID, sep = "." ))
 
+cars2 <- cars
+
+cars2$speed1 <- cars$speed + 1
 
 cnt0 <- subset(pm0, State.Code == 36 & county.site %in% both)
 cnt1 <- subset(pm1, State.Code == 36 & county.site %in% both)
