@@ -1,3 +1,4 @@
+######################### Week -1 ####################################
 ## download file
 #------------------
 fileUrl <- "https://opendata.arcgis.com/datasets/7055dbb02f0c4f14ab7ea3eb5ebfda42_0.csv?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
@@ -127,3 +128,234 @@ dt3 <- data.table(x = rep(c("a", "b", "c"), each = 100), int=runif(300,1,100))
 dt3
 setkey(dt3, x)
 dt3['b']
+
+######################### Week -2 ####################################
+
+library(rhdf5)
+created <- h5createFile("example.h5")
+created
+created <- h5createGroup("example.h5","foo")
+created
+
+created <- h5createGroup("example.h5","baa")
+created <- h5createGroup("example.h5","baa/foobaa")
+
+h5ls("example.h5")
+
+A <- matrix(1:10, nrow = 5, ncol = 2)
+A
+
+h5write(A, "example.h5", "foo/A")
+h5ls("example.h5")
+
+B = array(seq(0.1, 2, by = 0.1), dim = c(5,2,2))
+B
+
+attr(B, "scale") <- "liter"
+B
+
+h5write(B, "example.h5", "foo/foobaa/B")
+
+
+df <- data.frame(1L:5L, seq(0,1, length.out = 5), c("a","b","c","d","e"), stringsAsFactors = F)
+df
+
+h5write(df, "example.h5","df")
+h5ls("example.h5")
+
+
+
+con <- url("https://scholar.google.com/citations?user=HI-I6C0AAAAJ&hl=en")
+htmlcode <- readLines(con,10)
+close(con)
+htmlcode
+
+library(XML)
+url <- "https://scholar.google.com/citations?user=HI-I6C0AAAAJ&hl=en"
+html <- htmlTreeParse(url, useInternalNodes=T)
+xpathSApply(html, "//title", xmlValue)
+
+library(httr)
+url <- "https://scholar.google.com/citations?user=HI-I6C0AAAAJ&hl=en"
+html2 <- GET(url)
+content2 = content(html2, as="text")
+content2
+parsedHtml <- htmlParse(content2, asText = T)
+parsedHtml
+xpathSApply(parsedHtml, "//title",xmlValue)
+
+
+goo <- handle("https://www.google.com/")
+goo
+p1 <- GET(handle = goo, path="/")
+p2 <- GET(handle = goo, path="search")
+p2
+
+######################### Week -3 ####################################
+set.seed(13435)
+x <- data.frame("var1" = sample(1:5), "var2" = sample(6:10), "var3" = sample(11:15))
+x
+x$var2[c(1,3)] <- NA
+x
+x[x$var1 <= 3 & x$var3 > 11,]
+x[x$var2 > 8,] # without which NA soho ase
+x[which(x$var2 > 8 &  x$var1 >= 1 ) ,] # without which NA soho ase
+which(c(T,F,T))
+
+sort(x$var2) ## na exclude
+sort(x$var2, na.last = T) ## now na asche
+
+x[order(x$var1),]
+order(x$var2)
+
+
+if (!file.exists("data")) {dir.create("data")}
+fileUrl <- "https://opendata.arcgis.com/datasets/53319332a909407e8ee52ae8ea79663d_0.csv?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
+download.file(fileUrl, destfile = "data/restaurants.csv", method = "auto")
+resData <- read.csv("data/restaurants.csv")
+names(resData)
+head(resData,10)
+dim(resData)
+library(dplyr)
+resData <- select(resData, c(name,zipcode,nghbrhd,cncldst,plcdst, address) )
+str(resData)
+resData$plcdst <- factor(resData$plcdst)
+
+
+table(resData$zipcode)
+table(c(1,2,2,2,1,NA), useNA = "always")
+
+sum(is.na(resData$cncldst))
+any(is.na(resData$cncldst)) # Given a set of logical vectors, is at least one of the values true
+any(c(F,F)) # return F
+any(c(F,F,T)) # return T
+all(c(F,F,T)) # return F ;Given a set of logical vectors, are all of the values true
+all(c(T,T,T)) # return T ; because all are True
+
+is.na(resData) # all column er T or F return korbe
+colSums(is.na(resData)) #Every col er T or F sum hobe
+class(colSums(is.na(resData))) # retrun numberic vector
+colSums(is.na(resData)) == 0
+all(colSums(is.na(resData)) == 0) # all value T kina check kortese
+
+
+data(UCBAdmissions)
+df <- as.data.frame(UCBAdmissions)
+df
+summary(df)
+xt <- xtabs(Freq ~ Gender + Admit, data = df)
+xt
+
+
+warpbreaks
+xt <- xtabs(breaks ~. , data = warpbreaks)
+xt
+ftable(xt)
+
+
+resData$nearMe <- resData$nghbrhd %in% c("Roland Park","Homeland")
+table(resData$nearMe)
+
+resData$zipWrong <- ifelse(resData$zipcode < 0 , T, F)
+table(resData$zipWrong)
+
+resData$zipGroups <- cut(as.numeric(resData$zipcode), breaks = quantile(resData$zipcode))
+table(resData$zipGroups)
+table(resData$zipGroups,resData$zipcode)
+
+
+library(Hmisc)
+resData$zipGroups <- cut2(resData$zipcode, g=4)
+table(resData$zipGroups)
+
+yesno <- sample(c("Yes", "No"), size = 10, replace = T)
+yesno
+yesnofac <- factor(yesno)
+yesnofac
+relevel(yesnofac, ref = "Yes")#Reorder Levels of Factor
+
+# reshaping
+library(reshape2)
+head(mtcars)
+mtcars2 <- mtcars
+
+row.names(mtcars2)# this return row names
+rownames(mtcars2)# this return row names
+
+mtcars2$carname <- rownames(mtcars2); 
+head(mtcars2,3)
+dim(mtcars2)
+
+# here measure.vars er karone variable and value name a col create hoise
+# and variable value hisabe gese mpg and hp ; and value te gese mpg and hp col er value
+# row number double hoise
+# see melt.data.frame {reshape2}
+carMelt <- melt(mtcars2, id=c("carname","gear","cyl"), measure.vars = c("mpg","hp"))
+carMelt # now row num double hoise, compare to "mtcars2" data set
+carMelt[carMelt$carname == "Mazda RX4",]
+mtcars2[mtcars2$carname == "Mazda RX4",]
+
+#dcast
+# onk ta group by er motho, here group by cyl, count(variable)
+# by default count korbe, jodi fun.aggregate use na kori
+# data frame ta molten hote hobe
+cyldata <- dcast(carMelt, cyl ~ variable)
+carMelt[carMelt$cyl == 6,] # cyl 6 a mpg er ase 7 ta and hp te ase 7 ta
+
+cyldata <- dcast(carMelt, cyl ~ variable, mean)
+cyldata
+carMelt[carMelt$cyl == 6,]
+
+head(InsectSprays)
+str(InsectSprays)
+tapply(InsectSprays$count, InsectSprays$spray, sum)#InsectSprays$spray is a factor
+
+sprIns <- split(InsectSprays$count, InsectSprays$spray)
+sprIns
+sprCount <- lapply(sprIns, sum)
+sprCount
+unlist(sprCount) # list ke unlist kora hoise
+
+
+
+######################### Week -4 ####################################
+camera <- read.csv("data/cameras.csv")
+dim(camera)
+names(camera)
+toupper(names(camera))
+
+names(camera)
+splitNames <- strsplit(names(camera), "\\.")
+splitNames
+
+
+sub("_","*","name_id_yeasin") #only first er ta replace hobe
+gsub("_","*","name_id_yeasin") # all element are replaced
+
+names(camera)
+camera[,"intersecti"]
+grep("Alameda", camera$intersecti)# kon kon index a Alameda ase
+grep("Alameda", camera$intersecti, value = T) # here value para er karone value return korche
+grepl("Alameda", camera$intersecti) # Return True and False
+
+
+library(stringr)
+nchar("Yeasin Opu")
+str_trim("Yeasin  ")
+
+d1 <- date()
+d1
+class(d1)
+
+d2 <- Sys.Date()
+d2
+class(d2)
+
+library(lubridate)
+ymd("20110721")
+class(ymd("20110721"))
+Sys.timezone()
+
+dmYY <- dmy(c("1jan2021","1feb2021"))
+wday(dmYY, label = T)
+
