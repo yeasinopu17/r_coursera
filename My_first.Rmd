@@ -1,0 +1,45 @@
+---
+title: "My first"
+author: "Yeasin"
+date: "4/7/2021"
+output: html_document
+---
+# My First knitr Document
+Md. Yeasin
+
+## Introduction
+There is some text.
+
+Here is a code chunk
+```{r echo=TRUE}
+set.seed(2)
+x <- rnorm(100)
+y <- rnorm(100, sd = 0.5)
+```
+```{r include=FALSE}
+library(lubridate)
+time <- ydm_hms(Sys.time())
+```
+**Access R variable in text ** \
+Today's time is `r time` \ \
+
+```{r ScatterPlot, echo=TRUE, fig.height=4}
+par(mar = c(5,4,1,1), las = 1) # las means = the style of axis labels 
+plot(x,y, main = "My Simulated Data")
+```
+
+## Fit Model
+
+```{r}
+fit <-  lm(Ozone ~ Wind + Temp + Solar.R, data = airquality)
+```
+
+Here is a table of regression Coefficients.
+
+```{r xtable, warning=FALSE, results='asis'}
+#results='asis' important; na dile output html code a ase
+library(xtable)
+xt <- xtable(summary(fit))
+print(xt, type = "html")
+```
+
